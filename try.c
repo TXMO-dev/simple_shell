@@ -9,7 +9,7 @@
 #define MAX_ARGS 64
 extern char **environ;
 
-int main(int argc, char *argv[]) {
+int main(void) {
     char cmd[MAX_CMD_LENGTH];
     char *args[MAX_ARGS];
     char *token;
@@ -19,16 +19,14 @@ int main(int argc, char *argv[]) {
 
     while (1) {
 
-        if (isatty(STDIN_FILENO)) {
-            printf("$ ");
-            fflush(stdout);
-        }
+        printf("$ ");
+        fflush(stdout);
 
 
         if (fgets(cmd, MAX_CMD_LENGTH, stdin) == NULL) {
-        
             break;
         }
+
 
         bg = 0;
         if (cmd[strlen(cmd) - 2] == '&') {
@@ -45,30 +43,36 @@ int main(int argc, char *argv[]) {
         }
         args[num_args] = NULL;
 
+
         if (strcmp(args[0], "exit") == 0) {
             exit(0);
-        } else if (strcmp(args[0], "env") == 0) {
+        } 
+
+        else if (strcmp(args[0], "env") == 0) {
             char **env = environ;
             while (*env) {
                 printf("%s\n", *env++);
             }
             continue;
-        }
+        } 
 
-        pid = fork();
-        if (pid == 0) {
-            execvp(args[0], args);
-            perror(argv[0]);
-            exit(1);
-        } else if (pid < 0) {
-            perror(argv[0]);
-            exit(1);
-        } else {
-            if (!bg) {
-                waitpid(pid, NULL, 0);
+        else {
+            pid = fork();
+            if (pid == 0) {
+                execvp(args[0], args);
+                perror(args[0]);
+                exit(1);
+            } else if (pid < 0) {
+                perror("fork");
+                exit(1);
+            } else {
+                if (!bg) {
+                    waitpid(pid, NULL, 0);
+                }
             }
         }
     }
 
     return 0;
 }
+
