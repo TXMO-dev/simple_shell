@@ -1,4 +1,5 @@
-#include "simple_shell.h"
+#include "main.h"
+
 /**
  * _printenv - prints environment like printenv
  *

@@ -1,10 +1,12 @@
-#include "simple_shell.h"
+#include "main.h"
+
 /**
  * pathfinder - Takes PATH string, tokenizes it, then concats with "/" & cmd
  *@cmd: command passed from getline in main
  *
  * Return: new_path for use in cmd_read
  */
+
 char *pathfinder(char *cmd)
 {
 	char *path = _strdup(_getenv("PATH"));
